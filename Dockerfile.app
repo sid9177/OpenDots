@@ -11,6 +11,6 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev && mkdir -p /data && chown node:node /data
 COPY --from=build /app/dist ./dist
-USER node
+USER root
 EXPOSE 4310
-CMD ["node", "dist/server/server/index.js"]
+CMD ["sh", "-c", "mkdir -p /data && chown -R node:node /data && exec setpriv --reuid=node --regid=node --init-groups node dist/server/server/index.js"]
